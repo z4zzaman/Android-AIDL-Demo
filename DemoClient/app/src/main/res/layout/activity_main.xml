@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        android:text="Tata will be shown here, whenever come from server"
+        android:text="Time will be shown here, whenever come from server"
         android:textSize="24sp"
         android:textStyle="bold"/>
 
