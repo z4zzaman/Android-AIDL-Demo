@@ -8,12 +8,14 @@
         android:id="@+id/firstValue"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:inputType="number"
         android:hint="Enter a numeric value" />
 
     <EditText
         android:id="@+id/secondValue"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:inputType="number"
         android:hint="Enter a numeric value" />
 
     <LinearLayout

@@ -4,10 +4,13 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+
+import com.monir.demoserver.util.NotificationUtil;
 
 import java.util.ArrayList;
 
@@ -34,7 +37,7 @@ public class ArithmeticService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-         super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
         if (intent != null) {
             String action = intent.getAction();
 
@@ -59,7 +62,7 @@ public class ArithmeticService extends Service {
     /* Used to build and start foreground service. */
     private void startForegroundService() {
         // Create notification default intent.
-        Intent intent = new Intent();
+/*        Intent intent = new Intent();
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // Create notification builder.
@@ -87,6 +90,37 @@ public class ArithmeticService extends Service {
         Notification notification = builder.build();
 
         // Start foreground service.
+        startForeground(1, notification);*/
+
+
+        String stopServiceText = "Stop Service";
+        // Make notification show big text.
+        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+        bigTextStyle.setBigContentTitle("Arithmetic server is running a background service.");
+        bigTextStyle.bigText("You can stop the service by clicking on 'Stop Service' button.");
+
+        Bitmap largeIconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
+        // Add Play button intent in notification.
+        Intent stopServiceIntent = new Intent(this, ArithmeticService.class);
+        stopServiceIntent.setAction(ACTION_STOP_FOREGROUND_SERVICE);
+        PendingIntent pendingStopServiceIntent = PendingIntent.getService(this, 0, stopServiceIntent, 0);
+        NotificationCompat.Action stopServiceAction = new NotificationCompat.Action
+                (R.drawable.notification, stopServiceText, pendingStopServiceIntent);
+
+        // Create notification builder.
+        NotificationCompat.Builder builder = NotificationUtil.getBuilder(this);
+        builder.setContentTitle("Arithmetic Service is running as background service").setWhen(System.currentTimeMillis()).
+                setSmallIcon(R.drawable.notification).setLargeIcon(largeIconBitmap).
+                addAction(stopServiceAction).setStyle(bigTextStyle).
+                setContentText("Expand to stop Telemesh service").
+                setAutoCancel(false);//This one can be true as Activity Pause/Resume would re appear
+        // the notification normally unless developer modify the behavior
+
+        // Build the notification.
+        Notification notification = builder.build();
+
+        // Start foreground service.
         startForeground(1, notification);
     }
 
@@ -98,30 +132,30 @@ public class ArithmeticService extends Service {
         stopSelf();
     }
 
-   private final IRemote.Stub iRemote = new IRemote.Stub() {
-       @Override
-       public int add(int a, int b) throws RemoteException {
-           return (a + b);
-       }
+    private final IRemote.Stub iRemote = new IRemote.Stub() {
+        @Override
+        public int add(int a, int b) throws RemoteException {
+            return (a + b);
+        }
 
-       @Override
-       public int subtract(int a, int b) throws RemoteException {
-           return (a - b);
-       }
+        @Override
+        public int subtract(int a, int b) throws RemoteException {
+            return (a - b);
+        }
 
-       @Override
-       public double multiply(int a, int b) throws RemoteException {
-           return (a * b);
-       }
+        @Override
+        public double multiply(int a, int b) throws RemoteException {
+            return (a * b);
+        }
 
-       @Override
-       public void onData(ITimer timer) throws RemoteException {
+        @Override
+        public void onData(ITimer timer) throws RemoteException {
       /*     iTimerArrayList = new ArrayList<>();
            iTimerArrayList.add(timer);
 */
-      mItimer = timer;
-           AppDatabaseManager.getAppDatabaseManager().setTimerCallback(new TimeReceivedCallBack());
-       }
+            mItimer = timer;
+            AppDatabaseManager.getAppDatabaseManager().setTimerCallback(new TimeReceivedCallBack());
+        }
     };
 
     private class TimeReceivedCallBack implements ITimer {
@@ -130,7 +164,7 @@ public class ArithmeticService extends Service {
      /*       if (iTimerArrayList !=null){
                 iTimerArrayList.get(0).onTime(time);
             }*/
-            if (mItimer !=null){
+            if (mItimer != null) {
                 mItimer.onTime(time);
             }
         }

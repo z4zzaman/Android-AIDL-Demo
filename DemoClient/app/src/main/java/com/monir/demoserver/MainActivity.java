@@ -141,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         // Unbind from the service
-        unbindService(serviceConnection);
+        if (serviceConnection !=null){
+            unbindService(serviceConnection);
+        }
     }
 }
